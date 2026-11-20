@@ -1525,6 +1525,26 @@ Odotetut laajat kategoriat:
         <source>Image analysis failed to start with the GPU backend.</source>
         <translation>Kuva-analyysi ei käynnistynyt GPU-taustajärjestelmällä.</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>Anna tiedostopäätteet, kuten pdf, py, jpg.</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>Anna vähintään yksi tiedostopääte tai tyhjennä kenttä.</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>Tiedostotunnisteet</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>Kaikki tiedostot (esim. pdf, py, jpg)</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>Rajoita tämä ajo näihin tiedostopäätteisiin. Jätä tyhjäksi sisällyttääksesi kaikki tiedostotyypit.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>

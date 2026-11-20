@@ -159,6 +159,8 @@ changelog/
 !/docs/testing.md
 !/docs/categorization-behavior.md
 !/docs/updater-contract.md
+!/docs/ai/
+!/docs/ai/**
 
 # Build artifacts
 

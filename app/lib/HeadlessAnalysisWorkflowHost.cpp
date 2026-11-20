@@ -74,6 +74,10 @@ std::string text_llm_backend_request_summary()
 HeadlessAnalysisWorkflowHost::HeadlessAnalysisWorkflowHost(Options options)
     : options_(std::move(options))
 {
+    selected_path_keys_.reserve(options_.selected_paths.size());
+    for (const auto& path : options_.selected_paths) {
+        selected_path_keys_.insert(selected_path_key(path));
+    }
     settings_.load();
     if (options_.include_subdirectories) {
         settings_.set_include_subdirectories(*options_.include_subdirectories);
@@ -99,11 +103,7 @@ HeadlessAnalysisWorkflowHost::~HeadlessAnalysisWorkflowHost() = default;
 
 AnalysisRunResult HeadlessAnalysisWorkflowHost::execute()
 {
-    AnalysisRunResult result = AnalysisCoordinator(make_context()).execute();
-    if (result.status == AnalysisRunStatus::Completed) {
-        filter_review_entries_to_selected_paths();
-    }
-    return result;
+    return AnalysisCoordinator(make_context()).execute();
 }
 
 void HeadlessAnalysisWorkflowHost::request_stop()
@@ -141,25 +141,6 @@ std::vector<CategorizedFile> HeadlessAnalysisWorkflowHost::preview_review_entrie
                        }),
         entries.end());
 
-    if (options_.selected_paths.empty()) {
-        return entries;
-    }
-
-    std::unordered_set<std::string> selected;
-    selected.reserve(options_.selected_paths.size());
-    for (const auto& path : options_.selected_paths) {
-        selected.insert(selected_path_key(path));
-    }
-
-    entries.erase(
-        std::remove_if(entries.begin(),
-                       entries.end(),
-                       [&selected](const CategorizedFile& entry) {
-                           const auto full_path = Utils::utf8_to_path(entry.file_path) /
-                                                  Utils::utf8_to_path(entry.file_name);
-                           return !selected.contains(HeadlessAnalysisWorkflowHost::selected_path_key(full_path));
-                       }),
-        entries.end());
     return entries;
 }
 
@@ -239,9 +220,6 @@ AnalysisWorkflowContext HeadlessAnalysisWorkflowHost::make_context()
         [this]() { log_cached_highlights(); },
         [this]() { log_pending_queue(); },
         [this]() { return effective_scan_options(); },
-        [this](std::vector<FileEntry>& entries) {
-            filter_file_entries_to_selected_paths(entries);
-        },
         [this]() { notify_review_preview_changed(); },
         [](const std::vector<AnalysisWorkflowContext::StagePlan>&) {},
         [](AnalysisWorkflowContext::StageId, const std::vector<FileEntry>&) {},
@@ -258,6 +236,10 @@ AnalysisWorkflowContext HeadlessAnalysisWorkflowHost::make_context()
         },
         [this](const CategorizedFile& entry, const std::string& reason) {
             notify_recategorization_reset(entry, reason);
+        },
+        [this](const FileEntry& entry) {
+            return selected_path_keys_.empty() ||
+                   selected_path_keys_.contains(selected_path_key(Utils::utf8_to_path(entry.full_path)));
         }};
 }
 
@@ -596,29 +578,6 @@ void HeadlessAnalysisWorkflowHost::log_pending_queue()
     }
 }
 
-void HeadlessAnalysisWorkflowHost::filter_file_entries_to_selected_paths(
-    std::vector<FileEntry>& entries) const
-{
-    if (options_.selected_paths.empty()) {
-        return;
-    }
-
-    std::unordered_set<std::string> selected;
-    selected.reserve(options_.selected_paths.size());
-    for (const auto& path : options_.selected_paths) {
-        selected.insert(selected_path_key(path));
-    }
-
-    entries.erase(
-        std::remove_if(entries.begin(),
-                       entries.end(),
-                       [&selected](const FileEntry& entry) {
-                           return !selected.contains(selected_path_key(
-                               Utils::utf8_to_path(entry.full_path)));
-                       }),
-        entries.end());
-}
-
 void HeadlessAnalysisWorkflowHost::append_progress(const std::string& message)
 {
     should_stop();
@@ -697,29 +656,6 @@ void HeadlessAnalysisWorkflowHost::notify_recategorization_reset(const Categoriz
                                                                  const std::string& reason)
 {
     append_progress("[WARN] " + entry.file_name + " will be re-categorized: " + reason);
-}
-
-void HeadlessAnalysisWorkflowHost::filter_review_entries_to_selected_paths()
-{
-    if (options_.selected_paths.empty()) {
-        return;
-    }
-
-    std::unordered_set<std::string> selected;
-    selected.reserve(options_.selected_paths.size());
-    for (const auto& path : options_.selected_paths) {
-        selected.insert(selected_path_key(path));
-    }
-
-    new_files_to_sort_.erase(
-        std::remove_if(new_files_to_sort_.begin(),
-                       new_files_to_sort_.end(),
-                       [&selected](const CategorizedFile& entry) {
-                           const auto full_path = Utils::utf8_to_path(entry.file_path) /
-                                                  Utils::utf8_to_path(entry.file_name);
-                           return !selected.contains(HeadlessAnalysisWorkflowHost::selected_path_key(full_path));
-                       }),
-        new_files_to_sort_.end());
 }
 
 std::string HeadlessAnalysisWorkflowHost::normalize_folder_path(const std::filesystem::path& path)

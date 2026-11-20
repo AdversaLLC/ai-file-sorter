@@ -32,31 +32,29 @@ TEST_CASE("macOS ggml runtime candidates stay relative to the app layout") {
 }
 
 TEST_CASE("Windows Vulkan payload candidates prefer the BLAS runtime layout") {
-    const std::filesystem::path exe = R"(C:\AIFileSorter\aifilesorter.exe)";
+    TempDir temp_dir;
+    const auto root = temp_dir.path();
+    const auto exe = root / "aifilesorter.exe";
 
     const auto candidates = GgmlRuntimePaths::windows_vulkan_payload_candidate_dirs(exe);
 
     REQUIRE(candidates.size() == 2);
-    REQUIRE(candidates[0] ==
-            std::filesystem::path(R"(C:\AIFileSorter\lib\precompiled\vulkan-blas\bin)"));
-    REQUIRE(candidates[1] ==
-            std::filesystem::path(R"(C:\AIFileSorter\lib\precompiled\vulkan\bin)"));
+    REQUIRE(candidates[0] == root / "lib" / "precompiled" / "vulkan-blas" / "bin");
+    REQUIRE(candidates[1] == root / "lib" / "precompiled" / "vulkan" / "bin");
 }
 
 TEST_CASE("Windows CPU runtime candidates fall back to the Vulkan runtime layout") {
-    const std::filesystem::path exe = R"(C:\AIFileSorter\aifilesorter.exe)";
+    TempDir temp_dir;
+    const auto root = temp_dir.path();
+    const auto exe = root / "aifilesorter.exe";
 
     const auto candidates = GgmlRuntimePaths::windows_cpu_runtime_candidate_dirs(exe);
 
     REQUIRE(candidates.size() == 4);
-    REQUIRE(candidates[0] ==
-            std::filesystem::path(R"(C:\AIFileSorter\lib\ggml\wocuda)"));
-    REQUIRE(candidates[1] ==
-            std::filesystem::path(R"(C:\AIFileSorter\ggml\wocuda)"));
-    REQUIRE(candidates[2] ==
-            std::filesystem::path(R"(C:\AIFileSorter\lib\ggml\wvulkan)"));
-    REQUIRE(candidates[3] ==
-            std::filesystem::path(R"(C:\AIFileSorter\ggml\wvulkan)"));
+    REQUIRE(candidates[0] == root / "lib" / "ggml" / "wocuda");
+    REQUIRE(candidates[1] == root / "ggml" / "wocuda");
+    REQUIRE(candidates[2] == root / "lib" / "ggml" / "wvulkan");
+    REQUIRE(candidates[3] == root / "ggml" / "wvulkan");
 }
 
 TEST_CASE("Windows CPU runtime resolution falls back to the Vulkan runtime layout") {

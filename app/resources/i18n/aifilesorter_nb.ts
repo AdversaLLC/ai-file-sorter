@@ -1525,6 +1525,26 @@ Forventede brede kategorier:
         <source>Image analysis failed to start with the GPU backend.</source>
         <translation>Bildeanalyse kunne ikke starte med GPU-backend.</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>Skriv inn filtyper som pdf, py, jpg.</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>Skriv inn minst én filutvidelse eller tøm feltet.</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>Filutvidelser</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>Alle filer (f.eks. pdf, py, jpg)</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>Begrens denne kjøringen til disse filutvidelsene. La feltet stå tomt for å inkludere alle filtyper.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>

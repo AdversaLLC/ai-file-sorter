@@ -67,6 +67,7 @@
 #include <QDateTime>
 #include <QLabel>
 #include <QLineEdit>
+#include <QRegularExpression>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -1555,6 +1556,26 @@ void MainApp::on_analyze_clicked()
         }
     }
 
+    QStringList extensions;
+    const QString filter = extension_filter_entry->text().trimmed();
+    if (!filter.isEmpty()) {
+        static const QRegularExpression separators(QStringLiteral("[,;\\s]+"));
+        static const QRegularExpression valid_extension(
+            QStringLiteral("^\\.?[\\p{L}\\p{N}_+-]+(?:\\.[\\p{L}\\p{N}_+-]+)*$"));
+        const auto tokens = filter.split(separators, Qt::SkipEmptyParts);
+        for (const auto& token : tokens) {
+            if (!valid_extension.match(token).hasMatch()) {
+                show_error_dialog(tr("Enter file extensions like pdf, py, jpg.").toStdString());
+                return;
+            }
+            extensions.append(token.startsWith('.') ? token : QStringLiteral(".") + token);
+        }
+        if (extensions.isEmpty()) {
+            show_error_dialog(tr("Enter at least one extension or clear the field.").toStdString());
+            return;
+        }
+    }
+
     if (!ensure_folder_categorization_style(folder_path)) {
         return;
     }
@@ -1563,6 +1584,8 @@ void MainApp::on_analyze_clicked()
         return;
     }
 
+    core_logger->info("File extension filter for this run: {}",
+                      extensions.isEmpty() ? "all" : extensions.join(", ").toStdString());
     stop_analysis = false;
     text_cpu_fallback_choice_.reset();
     visual_cpu_fallback_choice_.reset();
@@ -1575,9 +1598,9 @@ void MainApp::on_analyze_clicked()
         progress_controller_.set_dialog(progress_dialog.get());
         progress_dialog->show();
 
-        analyze_thread = std::thread([this]() {
+        analyze_thread = std::thread([this, extensions]() {
             try {
-                perform_analysis();
+                perform_analysis(extensions);
             } catch (const std::exception& ex) {
                 core_logger->error("Exception during analysis: {}", ex.what());
                 post_analysis_failure(std::string("Analysis error: ") + ex.what());
@@ -2819,7 +2842,7 @@ void MainApp::log_pending_queue()
     }
 }
 
-AnalysisWorkflowContext MainApp::make_analysis_workflow_context()
+AnalysisWorkflowContext MainApp::make_analysis_workflow_context(const QStringList& extensions)
 {
     return AnalysisWorkflowContext{
         settings,
@@ -2842,7 +2865,6 @@ AnalysisWorkflowContext MainApp::make_analysis_workflow_context()
         [this]() { log_cached_highlights(); },
         [this]() { log_pending_queue(); },
         [this]() { return effective_scan_options(); },
-        [](std::vector<FileEntry>&) {},
         []() {},
         [this](const std::vector<AnalysisWorkflowContext::StagePlan>& stages) {
             configure_progress_stages(stages);
@@ -2867,13 +2889,25 @@ AnalysisWorkflowContext MainApp::make_analysis_workflow_context()
         [this](const std::string& reason) { return prompt_continue_without_visual_analysis(reason); },
         [this](const CategorizedFile& entry, const std::string& reason) {
             notify_recategorization_reset(entry, reason);
+        },
+        [extensions](const FileEntry& entry) {
+            if (extensions.isEmpty()) {
+                return true;
+            }
+            if (entry.type != FileType::File) {
+                return false;
+            }
+            const auto name = QString::fromStdString(entry.file_name);
+            return std::any_of(extensions.cbegin(), extensions.cend(), [&](const QString& extension) {
+                return name.size() > extension.size() && name.endsWith(extension, Qt::CaseInsensitive);
+            });
         }};
 }
 
-void MainApp::perform_analysis()
+void MainApp::perform_analysis(const QStringList& extensions)
 {
     const AnalysisRunResult result =
-        AnalysisCoordinator(make_analysis_workflow_context()).execute();
+        AnalysisCoordinator(make_analysis_workflow_context(extensions)).execute();
     const QPointer<MainApp> app(this);
 
     QMetaObject::invokeMethod(

@@ -1527,6 +1527,26 @@ Erwartete grobe Kategorien:
         <source>Image analysis failed to start with the GPU backend.</source>
         <translation>Die Bildanalyse konnte mit dem GPU-Backend nicht gestartet werden.</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>Geben Sie Dateierweiterungen wie pdf, py, jpg ein.</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>Geben Sie mindestens eine Dateierweiterung ein oder leeren Sie das Feld.</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>Dateierweiterungen</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>Alle Dateien (z. B. pdf, py, jpg)</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>Beschränken Sie diesen Lauf auf diese Dateierweiterungen. Lassen Sie das Feld leer, um alle Dateitypen einzuschließen.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>

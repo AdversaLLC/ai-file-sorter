@@ -373,6 +373,19 @@ void MainAppUiBuilder::build_central_panel(MainApp& app) {
     options_layout->addStretch(1);
     main_layout->addLayout(options_layout);
 
+    auto* extension_layout = new QHBoxLayout();
+    auto* extension_label = new QLabel(MainApp::tr("File extensions"), central);
+    app.extension_filter_entry = new QLineEdit(central);
+    app.extension_filter_entry->setObjectName(QStringLiteral("extension_filter_entry"));
+    app.extension_filter_entry->setPlaceholderText(MainApp::tr("All files (e.g. pdf, py, jpg)"));
+    app.extension_filter_entry->setToolTip(
+        MainApp::tr("Limit this run to these file extensions. Leave blank to include all file types."));
+    extension_label->setBuddy(app.extension_filter_entry);
+    app.extension_filter_entry->setAccessibleName(extension_label->text());
+    extension_layout->addWidget(extension_label);
+    extension_layout->addWidget(app.extension_filter_entry, 1);
+    main_layout->addLayout(extension_layout);
+
     auto* document_options_layout = new QVBoxLayout();
     document_options_layout->setContentsMargins(0, 0, 0, 0);
     document_options_layout->setSpacing(4);

@@ -14,6 +14,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 class CategorizationService;
@@ -222,12 +223,6 @@ private:
     void log_pending_queue();
 
     /**
-     * @brief Filter scanned entries to the optional selected file set.
-     * @param entries Entries from a folder scan.
-     */
-    void filter_file_entries_to_selected_paths(std::vector<FileEntry>& entries) const;
-
-    /**
      * @brief Forward a progress message to the caller.
      * @param message Progress text.
      */
@@ -273,11 +268,6 @@ private:
     void notify_recategorization_reset(const CategorizedFile& entry, const std::string& reason);
 
     /**
-     * @brief Filter review entries to explicitly selected file paths.
-     */
-    void filter_review_entries_to_selected_paths();
-
-    /**
      * @brief Normalize a folder path for database/cache keys and prompts.
      * @param path Folder path.
      * @return UTF-8 absolute normalized path when possible.
@@ -292,6 +282,7 @@ private:
     static std::string selected_path_key(const std::filesystem::path& path);
 
     Options options_;
+    std::unordered_set<std::string> selected_path_keys_;
     Settings settings_;
     std::string runtime_data_dir_;
     LocalFsProvider storage_provider_;

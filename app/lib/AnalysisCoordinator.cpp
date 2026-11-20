@@ -1,6 +1,7 @@
 #include "AnalysisCoordinator.hpp"
 
 #include "AnalysisEntryRouter.hpp"
+#include "AnalysisSelection.hpp"
 #include "AnalysisProgress.hpp"
 #include "CategoryDateSuffix.hpp"
 #include "CategorizationService.hpp"
@@ -275,6 +276,20 @@ AnalysisRunResult AnalysisCoordinator::execute()
         const bool add_document_date =
             analyze_documents && app_.settings.get_add_document_date_to_category();
         const bool use_full_path_keys = app_.settings.get_include_subdirectories();
+        const AnalysisSelection selection(
+            process_images_only,
+            process_documents_only,
+            [](const FileEntry& entry) {
+                const auto path = Utils::utf8_to_path(entry.full_path);
+                if (LlavaImageAnalyzer::is_supported_image(path)) {
+                    return AnalysisSelection::Kind::Image;
+                }
+                if (DocumentTextAnalyzer::is_supported_document(path)) {
+                    return AnalysisSelection::Kind::Document;
+                }
+                return AnalysisSelection::Kind::Other;
+            },
+            app_.include_entry);
 
         const auto cached_entries = app_.categorization_service.load_cached_entries(directory_path);
         std::vector<CategorizedFile> pending_renames;
@@ -526,6 +541,9 @@ AnalysisRunResult AnalysisCoordinator::execute()
             };
 
         for (const auto& cached_entry : cached_entries) {
+            if (!selection.includes(cached_entry)) {
+                continue;
+            }
             auto entry = cached_entry;
             const bool is_image_entry = is_supported_image_entry(entry);
             const bool is_document_entry = is_supported_document_entry(entry);
@@ -620,51 +638,6 @@ AnalysisRunResult AnalysisCoordinator::execute()
             app_.already_categorized_files.push_back(entry);
         }
 
-        if (process_images_only || process_documents_only) {
-            const bool allow_images = process_images_only;
-            const bool allow_documents = process_documents_only;
-            auto filter_entries = [&](std::vector<CategorizedFile>& entries) {
-                entries.erase(
-                    std::remove_if(entries.begin(),
-                                   entries.end(),
-                                   [&](const CategorizedFile& entry) {
-                                       if (entry.type != FileType::File) {
-                                           return true;
-                                       }
-                                       const auto full_path = Utils::utf8_to_path(entry.file_path) /
-                                                              Utils::utf8_to_path(entry.file_name);
-                                       const bool is_image = LlavaImageAnalyzer::is_supported_image(full_path);
-                                       const bool is_document = DocumentTextAnalyzer::is_supported_document(full_path);
-                                       if (is_image && allow_images) {
-                                           return false;
-                                       }
-                                       if (is_document && allow_documents) {
-                                           return false;
-                                       }
-                                       return true;
-                                   }),
-                    entries.end());
-            };
-            filter_entries(app_.already_categorized_files);
-            filter_entries(pending_renames);
-            if (!cached_visual_indices.empty()) {
-                for (size_t index = 0; index < app_.already_categorized_files.size(); ++index) {
-                    auto it = cached_visual_indices.find(file_key(app_.already_categorized_files[index]));
-                    if (it != cached_visual_indices.end()) {
-                        it->second = index;
-                    }
-                }
-            }
-            if (!cached_document_indices.empty()) {
-                for (size_t index = 0; index < app_.already_categorized_files.size(); ++index) {
-                    auto it = cached_document_indices.find(file_key(app_.already_categorized_files[index]));
-                    if (it != cached_document_indices.end()) {
-                        it->second = index;
-                    }
-                }
-            }
-        }
-
         update_stop();
 
         app_.log_cached_highlights();
@@ -681,33 +654,7 @@ AnalysisRunResult AnalysisCoordinator::execute()
                                                                                      scan_options,
                                                                                      cached_file_names,
                                                                                      use_full_path_keys);
-        if (process_images_only || process_documents_only) {
-            const bool allow_images = process_images_only;
-            const bool allow_documents = process_documents_only;
-            app_.files_to_categorize.erase(
-                std::remove_if(app_.files_to_categorize.begin(),
-                               app_.files_to_categorize.end(),
-                               [&](const FileEntry& entry) {
-                                   if (entry.type != FileType::File) {
-                                       return true;
-                                   }
-                                   const auto full_path = Utils::utf8_to_path(entry.full_path);
-                                   const bool is_image = LlavaImageAnalyzer::is_supported_image(full_path);
-                                   const bool is_document =
-                                       DocumentTextAnalyzer::is_supported_document(full_path);
-                                   if (is_image && allow_images) {
-                                       return false;
-                                   }
-                                   if (is_document && allow_documents) {
-                                       return false;
-                                   }
-                                   return true;
-                               }),
-                app_.files_to_categorize.end());
-        }
-        if (app_.filter_file_entries) {
-            app_.filter_file_entries(app_.files_to_categorize);
-        }
+        selection.retain(app_.files_to_categorize);
         app_.core_logger->debug("Found {} item(s) pending categorization in '{}'.",
                                 app_.files_to_categorize.size(),
                                 directory_path);
@@ -1975,16 +1922,14 @@ AnalysisRunResult AnalysisCoordinator::execute()
             review_entries.insert(review_entries.end(), pending_renames.begin(), pending_renames.end());
         }
 
-        auto actual_files = app_.results_coordinator.list_directory(app_.get_folder_path(), scan_options);
-        if (app_.filter_file_entries) {
-            app_.filter_file_entries(actual_files);
-        }
+        auto actual_files = app_.results_coordinator.list_directory(directory_path, scan_options);
+        selection.retain(actual_files);
         app_.new_files_to_sort = app_.results_coordinator.compute_files_to_sort(
-            app_.get_folder_path(),
+            directory_path,
             scan_options,
             actual_files,
             review_entries,
-            app_.settings.get_include_subdirectories());
+            use_full_path_keys);
         app_.core_logger->debug("{} file(s) queued for sorting after analysis.",
                                 app_.new_files_to_sort.size());
 

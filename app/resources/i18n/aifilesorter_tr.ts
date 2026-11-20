@@ -1527,6 +1527,26 @@ Beklenen geniş kategoriler:
         <source>Image analysis failed to start with the GPU backend.</source>
         <translation>Görüntü analizi GPU arka ucuyla başlatılamadı.</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>Pdf, py, jpg gibi dosya uzantılarını girin.</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>En az bir dosya uzantısı girin veya alanı temizleyin.</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>Dosya uzantıları</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>Tüm dosyalar (ör. pdf, py, jpg)</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>Bu çalıştırmayı bu dosya uzantılarıyla sınırlandırın. Tüm dosya türlerini dahil etmek için boş bırakın.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>

@@ -52,8 +52,6 @@ struct AnalysisWorkflowContext {
     std::function<void()> log_cached_highlights;
     std::function<void()> log_pending_queue;
     std::function<FileScanOptions()> effective_scan_options;
-    /** @brief Optional host filter for scan entries before analysis and review. */
-    std::function<void(std::vector<FileEntry>&)> filter_file_entries;
     /** @brief Optional callback when the in-progress review preview has changed. */
     std::function<void()> notify_review_preview_changed;
     std::function<void(const std::vector<StagePlan>&)> configure_progress_stages;
@@ -69,4 +67,6 @@ struct AnalysisWorkflowContext {
     std::function<bool(const std::string&)> prompt_visual_cpu_fallback;
     std::function<bool(const std::string&)> prompt_continue_without_visual_analysis;
     std::function<void(const CategorizedFile&, const std::string&)> notify_recategorization_reset;
+    /** @brief Optional host choice applied to cached, pending, and review entries. */
+    std::function<bool(const FileEntry&)> include_entry{};
 };

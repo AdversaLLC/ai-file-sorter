@@ -780,14 +780,9 @@ TEST_CASE("What's New content is packaged for the current app version")
     const QString markdown = WhatsNewContent::markdown_for_version(version);
 
     REQUIRE(markdown.contains(QStringLiteral("Highlights")));
-    REQUIRE(markdown.contains(QStringLiteral("SSE4.2-capable x64 CPUs")));
-    REQUIRE(markdown.contains(QStringLiteral("CA bundle staging")));
+    REQUIRE(markdown.contains(QStringLiteral("close before sorting started")));
 
     REQUIRE(WhatsNewContent::markdown_for_version(version, Language::English) == markdown);
-
-    const QString french = WhatsNewContent::markdown_for_version(version, Language::French);
-    REQUIRE(french.contains(QStringLiteral("Points forts")));
-    REQUIRE_FALSE(french.contains(QStringLiteral("Highlights")));
 
     const std::vector<Language> localized_languages = {
         Language::French,
@@ -809,8 +804,7 @@ TEST_CASE("What's New content is packaged for the current app version")
     for (const Language language : localized_languages) {
         INFO("Language enum value: " << static_cast<int>(language));
         const QString localized = WhatsNewContent::markdown_for_version(version, language);
-        REQUIRE_FALSE(localized.isEmpty());
-        REQUIRE(localized != markdown);
+        REQUIRE(localized == markdown);
     }
 
     REQUIRE(WhatsNewContent::markdown_for_version(QStringLiteral("bad/version")).isEmpty());

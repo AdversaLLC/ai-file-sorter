@@ -1527,6 +1527,26 @@ Expected broad categories:
         <source>[WARN] %1 will be re-categorized: %2</source>
         <translation>[WARN] %1 will be re-categorized: %2</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>पीडीएफ, पीवाई, जेपीजी जैसे फ़ाइल एक्सटेंशन दर्ज करें।</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>कम से कम एक फ़ाइल एक्सटेंशन दर्ज करें या फ़ील्ड साफ़ करें।</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>फ़ाइल एक्सटेंशन</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>सभी फ़ाइलें (उदा. पीडीएफ, पीवाई, जेपीजी)</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>इस रन को इन फ़ाइल एक्सटेंशन तक सीमित रखें। सभी फ़ाइल प्रकारों को शामिल करने के लिए खाली छोड़ दें।</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>

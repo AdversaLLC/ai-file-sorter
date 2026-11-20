@@ -1527,6 +1527,26 @@ Verwachte brede categorieën:
         <source>Image analysis failed to start with the GPU backend.</source>
         <translation>De afbeeldingsanalyse kon niet starten met de GPU-backend.</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>Voer bestandsextensies in zoals pdf, py, jpg.</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>Voer ten minste één bestandsextensie in of wis het veld.</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>Bestandsextensies</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>Alle bestanden (bijvoorbeeld pdf, py, jpg)</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>Beperk deze run tot deze bestandsextensies. Laat dit leeg om alle bestandstypen op te nemen.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>

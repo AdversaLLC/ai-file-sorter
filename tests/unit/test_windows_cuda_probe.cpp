@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <vector>
 
+#ifdef _WIN32
 TEST_CASE("WindowsCudaProbe normalizes mixed-era runtime suffixes") {
     CHECK(WindowsCudaProbe::TestAccess::runtime_version_rank("cudart64_13.dll") >
           WindowsCudaProbe::TestAccess::runtime_version_rank("cudart64_65.dll"));
@@ -40,3 +41,4 @@ TEST_CASE("WindowsCudaProbe prefers x64 toolkit bin directories over generic too
     CHECK(ranked.front() == toolkit_x64_runtime);
     CHECK(ranked.back() == toolkit_root_copy);
 }
+#endif

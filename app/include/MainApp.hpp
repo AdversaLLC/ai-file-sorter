@@ -23,6 +23,7 @@
 #include <QCoreApplication>
 #include <QMainWindow>
 #include <QPointer>
+#include <QStringList>
 #include <QStandardItemModel>
 #include <QMenu>
 #include <QAction>
@@ -329,12 +330,12 @@ private:
     void handle_no_files_to_sort();
     void populate_tree_view(const std::vector<CategorizedFile>& files);
 
-    void perform_analysis();
+    void perform_analysis(const QStringList& extensions);
     /**
      * @brief Builds the host context used by the analysis workflow.
      * @return Context containing workflow services, state, and callbacks.
      */
-    AnalysisWorkflowContext make_analysis_workflow_context();
+    AnalysisWorkflowContext make_analysis_workflow_context(const QStringList& extensions);
     void stop_running_analysis();
     void on_about_activate();
     /**
@@ -468,6 +469,7 @@ private:
     std::vector<CategorizedFile> new_files_to_sort;
 
     QPointer<QLineEdit> path_entry;
+    QPointer<QLineEdit> extension_filter_entry;
     QPointer<QPushButton> analyze_button;
     QPointer<QPushButton> browse_button;
     QPointer<QLabel> backend_status_label;

@@ -1525,6 +1525,26 @@ Expected broad categories:
         <source>Image analysis failed to start with the GPU backend.</source>
         <translation>图像分析无法从 GPU 后端启动。</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>输入文件扩展名，例如 pdf、py、jpg。</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>输入至少一个文件扩展名或清除该字段。</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>文件扩展名</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>所有文件（例如 pdf、py、jpg）</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>将此运行限制为这些文件扩展名。留空以包含所有文件类型。</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>

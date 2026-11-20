@@ -1525,6 +1525,26 @@ Væntir breiðir flokkar:
         <source>Image analysis failed to start with the GPU backend.</source>
         <translation>Myndgreining mistókst að byrja með GPU bakenda.</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>Sláðu inn skráarendingar eins og pdf, py, jpg.</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>Sláðu inn að minnsta kosti eina skráarviðbót eða tæmdu reitinn.</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>Skráarviðbætur</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>Allar skrár (t.d. pdf, py, jpg)</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>Takmarkaðu þessa keyrslu við þessar skráarviðbætur. Skildu eftir autt til að innihalda allar skráargerðir.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>

@@ -1525,6 +1525,26 @@ Förväntade breda kategorier:
         <source>Image analysis failed to start with the GPU backend.</source>
         <translation>Bildanalys kunde inte starta med GPU-backend.</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>Ange filtillägg som pdf, py, jpg.</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>Ange minst ett filtillägg eller rensa fältet.</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>Filtillägg</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>Alla filer (t.ex. pdf, py, jpg)</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>Begränsa denna körning till dessa filtillägg. Lämna tomt för att inkludera alla filtyper.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>

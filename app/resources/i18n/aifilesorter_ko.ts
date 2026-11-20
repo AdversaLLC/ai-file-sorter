@@ -1527,6 +1527,26 @@ Expected broad categories:
         <source>Image analysis failed to start with the GPU backend.</source>
         <translation>GPU 백엔드로 이미지 분석을 시작하지 못했습니다.</translation>
     </message>
+    <message>
+        <source>Enter file extensions like pdf, py, jpg.</source>
+        <translation>pdf, py, jpg와 같은 파일 확장자를 입력하세요.</translation>
+    </message>
+    <message>
+        <source>Enter at least one extension or clear the field.</source>
+        <translation>파일 확장자를 하나 이상 입력하거나 필드를 지우십시오.</translation>
+    </message>
+    <message>
+        <source>File extensions</source>
+        <translation>파일 확장자</translation>
+    </message>
+    <message>
+        <source>All files (e.g. pdf, py, jpg)</source>
+        <translation>모든 파일(예: pdf, py, jpg)</translation>
+    </message>
+    <message>
+        <source>Limit this run to these file extensions. Leave blank to include all file types.</source>
+        <translation>이 실행을 다음 파일 확장자로 제한하십시오. 모든 파일 형식을 포함하려면 비워 두세요.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowStateBinder</name>
